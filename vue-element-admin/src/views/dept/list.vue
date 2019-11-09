@@ -23,7 +23,7 @@
         <span>{{ scope.row.id }}</span>
       </template>
     </el-table-column>
-    <el-table-column label="部门人数" prop="persons" align="center" width="80" sortable>
+    <el-table-column label="部门人数" prop="persons" align="center" width="120" sortable>
       <template slot-scope="scope">
         <el-tag :type="scope.row.persons|typeFilter">{{ scope.row.persons }}</el-tag>
       </template>
@@ -115,21 +115,30 @@
         methods:{
             getList() {
                 fetchList(this.listQuery).then(response => {
-                    this.list = response.data.items
-                    this.total = response.data.total
+                    console.log(response);
+                    this.list = response.data.items;
+                    this.total = response.data.total;
+                }).catch(res=>{
+                    console.log(res);
                 })
             },
-            deleteDept(row){
-                delDept(row).then(res=>{
-                    if(res.code==20000) {
-                      const index = this.list.indexOf(row)
-                      this.list.splice(index, 1)
-                    }
-                    this.$notify({
-                        title: "删除确认",
-                        message: res.code==20000?"删除成功":"删除失败",
-                        type: res.code==20000?'success':'error',
-                        duration: 2000
+            deleteDept(row) {
+                this.$confirm('确定要删除吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    delDept(row).then(res => {
+                        if (res.code == 20000) {
+                            const index = this.list.indexOf(row)
+                            this.list.splice(index, 1)
+                        }
+                        this.$notify({
+                            title: "删除确认",
+                            message: res.code == 20000 ? "删除成功" : "删除失败",
+                            type: res.code == 20000 ? 'success' : 'error',
+                            duration: 2000
+                        })
                     })
                 })
             },
@@ -144,9 +153,11 @@
               this.temp.persons=row.persons;
               this.dialogFormVisible=true;
             },
-            saveDept(){
+            saveDept(){//saveDept
+                console.log('begin save...')
                 if(this.updateIndex==-1) {//new
-                    let row={id:this.list.length,deptName:this.deptName,persons:this.persons };
+                    console.log('update index =-1...')
+                    let row={id:this.list.length,deptName:this.temp.deptName,persons:this.temp.persons };
                     createDept(row).then(res=>{
                         this.getList();
                         this.$notify({
@@ -157,21 +168,20 @@
                         })
                     })
                 } else {
+                    console.log('update data  ...')
+                    this.temp.peoples=this.temp.persons;
+
                   updateDept(this.temp).then(res=>{
-                      for (let i=0;i<this.list.length;i++) {
-                          if(this.list[i]==this.updateRow) {
-                              console.log(this.list[i]);
-                              this.list[i].deptName=this.temp.deptName;
-                              this.list[i].persons=this.temp.persons;
-                              break;
-                          }
-                      }
+                      this.getList();
+
                       this.$notify({
                           title: "保存确认",
                           message: res.code==20000?"修改成功":"修改失败",
                           type: res.code==20000?'success':'error',
                           duration: 2000
                       })
+                  }).catch(res=>{
+                      console.log(res)
                   })
 
                 }

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/dept/list',
+    url: 'http://localhost:8080/dept/list',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function fetchDept(id) {
   return request({
-    url: '/dept/detail',
+    url: 'http://localhost:8080/dept/detail',
     method: 'get',
     params: { id }
   })
@@ -18,7 +18,7 @@ export function fetchDept(id) {
 
 export function createDept(data) {
   return request({
-    url: '/dept/create',
+    url: 'http://localhost:8080/dept/create',
     method: 'post',
     data
   })
@@ -26,7 +26,7 @@ export function createDept(data) {
 
 export function updateDept(data) {
   return request({
-    url: '/dept/update',
+    url: 'http://localhost:8080/dept/update',
     method: 'post',
     data
   })
@@ -34,7 +34,7 @@ export function updateDept(data) {
 
 export function delDept(data) {
   return request({
-    url: '/dept/delete',
+    url: 'http://localhost:8080/dept/delete',
     method: 'post',
     data
   })
